@@ -1,0 +1,84 @@
+.tables-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .table {
+    margin: 1em;
+    padding: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
+    width: 300px;
+  }
+  
+  .table-title {
+    margin-top: 0;
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1em;
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 0.5em;
+    border-bottom: 1px solid black;
+  }
+
+  tr.asset-type th{
+    background-color: #d1cfcf;
+  }
+  
+  th {
+    font-weight: bold;
+    background-color: #bebebe;
+  }
+  
+  tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  tbody tr:hover {
+    background-color: #ddd;
+  }
+  
+  /* Assets table specific styles */
+  
+  .table:nth-child(3) table tr:first-child td:first-child {
+    font-weight: bold;
+    padding-top: 1em;
+  }
+  
+  .table:nth-child(3) table tr:nth-child(2) td:first-child {
+    padding-top: 1em;
+  }
+  
+  .table:nth-child(3) table tr:nth-child(4) td:first-child {
+    font-weight: bold;
+    padding-top: 1em;
+  }
+  
+  .table:nth-child(3) table tr:last-child td:first-child {
+    padding-top: 1em;
+  }
+  
+  .payday {
+    margin-top: 2em;
+    text-align: center;
+  }
+  
+  .payday p {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  .stock{
+    cursor: pointer;
+  }
+  

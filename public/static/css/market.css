@@ -1,0 +1,84 @@
+.market {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12.5%;
+}
+
+.market__option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 20px;
+    cursor: pointer;
+    transition: transform 0.5s ease-in-out;
+}
+
+.market__option-image {
+    width: 300px;
+    height: 300px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 10px;
+}
+
+.market__option-name {
+    font-size: 40px;
+}
+
+.market__option:hover {
+    transform: scale(1.1);
+}
+
+.market-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 5%;
+  position: relative;
+}
+
+.market-table th, .market-table td {
+  padding: 12px;
+  border: none;
+  text-align: left;
+}
+
+.market-table th {
+  font-weight: 700;
+}
+
+.market-table tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.market-table tbody tr {
+  cursor: pointer;
+}
+
+.market-table tbody tr:hover {
+  background-color: #f2f4f5;
+}
+
+.market-table tbody td {
+  font-weight: 500;
+  border-bottom: 1px solid #e3e8ee;
+}
+
+.market-table tbody td:first-child {
+  border-radius: 5px 0 0 5px;
+}
+
+.market-table tbody td:last-child {
+  border-radius: 0 5px 5px 0;
+}
+
+.market-table tbody td.right {
+  text-align: right;
+}
+
+.market-table tbody td.stability {
+  text-align: center;
+  font-weight: bold;
+}

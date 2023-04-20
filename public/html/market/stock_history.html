@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stock Price History</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/stock.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+          <a id="username" href="#"></a>
+          <ul class="navbar-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/jobs">Jobs</a></li>
+            <li><a href="/education">Education</a></li>
+            <li><a href="/bank">Bank</a></li>
+            <li><a href="/market">Market</a></li>
+            <li><a href="#" onclick="logout()">Log Out</a></li>
+          </ul>
+          <a class="logo" href="#">The Rich Race</a>
+        </div>
+      </nav>
+    <div style="margin-top: 3%;display: flex; flex-direction: row;">
+        <div style="width: 70%;margin-top: 10px;">
+            <canvas id="chart"></canvas>
+        </div>
+
+      <div class="stocks">
+        <h2>Other Stocks</h2>
+        <ul id="s-list"></ul>
+      </div>
+    </div>
+    <div style="text-align: center;margin-top: 10px;">
+      <button class="button" onclick="buyStock()">Buy Stock</button>
+      <button class="button" style="background-color: brown;" onclick="buyStock()">Sell Stock</button>
+    </div>
+
+    <script src="/js/script.js"></script>
+    <script src="/js/market/stockh.js"></script>
+    <script>
+        
+    
+    
+      </script>
+
+
+    </body>
+    </html>

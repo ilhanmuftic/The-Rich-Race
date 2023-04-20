@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login and Signup Form</title>
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="forms-container">
+        <div class="signin-signup">
+          <!-- Login Form -->
+          <form class="sign-in-form">
+            <h2 class="title">Sign in</h2>
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" placeholder="Username" name="username" required>
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" placeholder="Password" name="password" required>
+            </div>
+            <input type="submit" value="Login" class="btn solid">
+          </form>
+          <!-- Signup Form -->
+          <form class="sign-up-form disabled">
+            <h2 class="title">Sign up</h2>
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" placeholder="Username" name="username" required>
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              <input type="password" placeholder="Password" name="password" required>
+            </div>
+            <input type="submit" value="Sign up" class="btn solid">
+          </form>
+        </div>
+      </div>
+
+      <button id="sign-in-btn" class="disabled">Already have an account?</button>
+      <button id="sign-up-btn">Create new account?</button>
+
+
+    <script src="js/login.js"></script>
+  </body>
+</html>
