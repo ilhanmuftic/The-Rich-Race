@@ -77,7 +77,7 @@ INSERT INTO `jobs` (`id`, `title`, `salary`, `education_required`, `experience_r
 (7, 'Police Officer', '2000.00', 1, 2),
 (8, 'Teacher', '5000.00', 2, 3),
 (9, 'Food Service Worker', '800.00', 0, 0),
-(10, 'Prostitute', '800.00', 0, 0),
+(10, 'Courier', '800.00', 0, 0),
 (11, 'Janitor', '800.00', 0, 0);
 
 -- --------------------------------------------------------
