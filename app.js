@@ -58,7 +58,7 @@ const authMiddleware = async (req, res, next) => {
     const { playerId } = jwt.verify(token, JWT_SECRET);
 
     // Attach the user object to the request
-    const playerQuery = `SELECT p.*, j.title AS job_title, e.name AS education_name, pt.time as experience
+    const playerQuery = `SELECT p.*, j.title AS job_title, e.name AS education_name, pt.time as experience, (j.salary + j.salary * p.job_raise/100) as salary
     FROM players p
     LEFT JOIN jobs j ON p.job_id = j.id
     LEFT JOIN education e ON p.education_id = e.id
@@ -138,7 +138,7 @@ const authMiddleware = async (req, res, next) => {
   next();
   } catch (err) {
     console.log(err)
-    res.status(401).send({error:'Unauthorized'});
+    //res.status(401).send({error:'Unauthorized'});
     res.redirect('/login')
   }
 };  
@@ -180,10 +180,29 @@ app.get('/market/real_estate', authMiddleware, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "html", "market", "real_estate.html"));
 });
 
+app.get('/market/vehicle', authMiddleware, (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "html", "market", "vehicle.html"));
+});
+
+app.get('/market/vehicle/car', authMiddleware, (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "html", "market", "car.html"));
+});
+
+app.get('/market/vehicle/motorcycle', authMiddleware, (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "html", "market", "motorcycle.html"));
+});
+
+app.get('/garage', authMiddleware, (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "html", "garage.html"));
+});
+
 app.get('/player/:id', authMiddleware, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "html", "profile.html"));
 });
 
+app.get('/time', authMiddleware, (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "html", "time.html"));
+});
 
 
 app.get('/financials', authMiddleware, async (req, res) => {
@@ -206,7 +225,7 @@ app.get('/financials', authMiddleware, async (req, res) => {
   });
 
   const stocks = await new Promise((resolve, reject) => {
-    db.query(`SELECT s.id, s.symbol, ps.amount, s.price 
+    db.query(`SELECT s.id, s.symbol, ps.amount, s.price,  CAST((s.price - ps.paid/ps.amount) * 100 AS DECIMAL(10, 2)) AS profit
     FROM player_stocks ps 
     JOIN stocks s ON ps.stock_id = s.id 
     WHERE ps.player_id = '${req.player.id}' 
@@ -350,11 +369,14 @@ app.post('/edu_select/:eduId', authMiddleware, async (req, res) => {
 
 
 app.post('/get-loan', authMiddleware, (req, res) => {
-  const {name, amount} = req.body;
+  var {name, amount} = req.body;
+
   const playerId = req.player.id; // replace with function to get current player
+  if(req.player.salary*6 < amount) return res.status(402).send({error:"Not Eligable, exceeds loan maximum!"})
   const liabilityId = generateId()
   const cashflowId = generateId()
   const loan = [playerId, name, amount, liabilityId]
+  amount*=1.1
   const expense = [cashflowId, playerId, "expense", name + " Payment", amount*0.1]
   const liability = [liabilityId, playerId, name, amount, cashflowId]
 
@@ -452,6 +474,199 @@ app.get('/get-real-estate', authMiddleware, async (req, res) => {
   }
 });
 
+app.get('/get-cars', authMiddleware, async (req, res) => {
+  try {
+    // Get all jobs from the jobs table
+    const cars = await new Promise((resolve, reject) => {
+      db.query(`SELECT c.id, cb.name AS brand_name, c.model, c.price
+      FROM cars c
+      INNER JOIN car_brands cb ON c.brand = cb.id;
+      `,  (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
+
+    res.status(200).send({ cars: cars });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({error:'Internal Server Error'});
+  }
+});
+
+app.get('/get-motorcycles', authMiddleware, async (req, res) => {
+  try {
+    // Get all jobs from the jobs table
+    const motorcycles = await new Promise((resolve, reject) => {
+      db.query(`SELECT m.id, mb.name AS brand_name, m.model, m.price
+      FROM motorcycles m
+      INNER JOIN motorcycle_brands mb ON m.brand = mb.id;
+      `,  (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
+
+    res.status(200).send({ motorcycles: motorcycles });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({error:'Internal Server Error'});
+  }
+});
+
+
+app.get('/get-player-vehicles', authMiddleware, async (req, res) => {
+  try {
+    // Get all jobs from the jobs table
+    const cars = await new Promise((resolve, reject) => {
+      db.query(`SELECT pc.id, cb.name AS brand_name, c.model, pc.value, c.id as car_id
+      FROM player_cars pc
+      INNER JOIN cars c ON pc.car_id = c.id
+      INNER JOIN car_brands cb ON c.brand = cb.id
+      WHERE pc.player_id = '${req.player.id}';
+      
+`,  (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
+
+    const motorcycles = await new Promise((resolve, reject) => {
+      db.query(`SELECT pm.id, mb.name AS brand_name, m.model, pm.value, m.id as motorcycle_id
+      FROM player_motorcycles pm
+      INNER JOIN motorcycles m ON pm.motorcycle_id = m.id
+      INNER JOIN motorcycle_brands mb ON m.brand = mb.id
+      WHERE pm.player_id = '${req.player.id}';
+      
+`,  (err, results) => {
+        if (err) reject(err);
+        else resolve(results);
+      });
+    });
+
+    res.status(200).send({ cars: cars, motorcycles: motorcycles });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({error:'Internal Server Error'});
+  }
+});
+
+app.post('/buy/car', authMiddleware, async (req, res) => {
+  const car_id = parseInt(req.body.vehicleId);
+  const player_id = req.player.id; // replace with function to get current player
+  
+  try{
+    const results = await new Promise((resolve, reject) => {
+      db.query(`SELECT * FROM cars WHERE id = ${car_id}`, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+
+    if(!results[0]) return res.status(404).send({ error: "Selected Car Not Found!" })
+    if(results[0].price > req.player.balance) return res.status(402).send({ error: "Not Enough Money!" })
+
+    await db.query(`UPDATE players SET balance = balance - ${results[0].price} WHERE id = '${player_id}'`, (err) => {if(err) throw err});
+    await db.query('INSERT INTO player_cars (`player_id`, `car_id`, `value`) VALUES (?);', [[player_id, car_id, results[0].price * 0.80]], (err) => {if(err) throw err});
+    res.status(200).send({});
+  }catch (error) {
+    console.error('Buy Car Error:', error);
+    res.status(500).send({error:'Internal Server Error!'});
+  }
+
+});
+
+app.post('/buy/motorcycle', authMiddleware, async (req, res) => {
+  const motorcycle_id = parseInt(req.body.vehicleId);
+  const player_id = req.player.id; // replace with function to get current player
+  
+  try{
+    const results = await new Promise((resolve, reject) => {
+      db.query(`SELECT * FROM motorcycles WHERE id = ${motorcycle_id}`, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+
+    if(!results[0]) return res.status(404).send({ error: "Selected Motorcycle Not Found!" })
+    if(results[0].price > req.player.balance) return res.status(402).send({ error: "Not Enough Money!" })
+
+    await db.query(`UPDATE players SET balance = balance - ${results[0].price} WHERE id = '${player_id}'`, (err) => {if(err) throw err});
+    await db.query('INSERT INTO player_motorcycles (`player_id`, `motorcycle_id`, `value`) VALUES (?);', [[player_id, motorcycle_id, results[0].price * 0.95]], (err) => {if(err) throw err});
+    res.status(200).send({});
+  }catch (error) {
+    console.error('Buy Motorcycle Error:', error);
+    res.status(500).send({error:'Internal Server Error!'});
+  }
+
+});
+
+app.post('/sell/car/:id', authMiddleware, async (req, res) => {
+  const car_id = req.params.id;
+  console.log(car_id)
+  const player_id = req.player.id; // replace with function to get current player
+  
+  try {
+    const results = await new Promise((resolve, reject) => {
+      db.query(`SELECT * FROM player_cars WHERE id = '${car_id}' AND player_id ='${player_id}';`, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+
+
+
+    if(!results[0]) return res.status(404).send({ error: "You Don't Own The Selected Car!" })
+
+    await db.query(`UPDATE players SET balance = balance + ${results[0].value} WHERE id = '${player_id}'`, (err) => {if(err) throw err});
+    await db.query(`DELETE FROM player_cars WHERE id=${car_id};`, (err) => {if(err) throw err});
+    res.status(200).send({});
+
+  } catch (err) {
+    console.log(err)
+    res.status(500).send({ error: "Internal Server Error!" })
+  }
+
+});
+
+app.post('/sell/motorcycle/:id', authMiddleware, async (req, res) => {
+  const motorcycle_id = req.params.id;
+  const player_id = req.player.id; // replace with function to get current player
+  
+  try {
+    const results = await new Promise((resolve, reject) => {
+      db.query(`SELECT * FROM player_motorcycles WHERE id = '${motorcycle_id}' AND player_id ='${player_id}';`, (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+
+
+
+    if(!results[0]) return res.status(404).send({ error: "You Don't Own The Selected Motorcycle!" })
+
+    await db.query(`UPDATE players SET balance = balance + ${results[0].value} WHERE id = '${player_id}'`, (err) => {if(err) throw err});
+    await db.query(`DELETE FROM player_motorcycles WHERE id=${motorcycle_id};`, (err) => {if(err) throw err});
+    res.status(200).send({});
+
+  } catch (err) {
+    console.log(err)
+    res.status(500).send({ error: "Internal Server Error!" })
+  }
+
+});
 
 app.post('/buy/stock', authMiddleware, async (req, res) => {
   const stock_id = req.body.stockId;
@@ -463,9 +678,9 @@ app.post('/buy/stock', authMiddleware, async (req, res) => {
     if(results[0]){
       const value = results[0].price * amount
       if(value <= req.player.balance){
-        const stock = [generateId('ST'), player_id, amount, stock_id]
+        const stock = [generateId('ST'), player_id, amount, stock_id, value]
         await db.query(`UPDATE players SET balance = balance - ${value} WHERE id = '${player_id}'`, (err) => {if(err) throw err});
-        await db.query("INSERT INTO player_stocks (id, `player_id`, `amount`, `stock_id`) VALUES ? ON DUPLICATE KEY UPDATE `amount` = `amount` + VALUES(`amount`);", [[stock]], (err) => {if(err) throw err});
+        await db.query("INSERT INTO player_stocks (id, `player_id`, `amount`, `stock_id`, `paid`) VALUES ? ON DUPLICATE KEY UPDATE `amount` = `amount` + VALUES(`amount`), paid = paid + VALUES(paid);", [[stock]], (err) => {if(err) throw err});
         res.status(200).send({});
       }else res.status(402).send({ error: "Not Enough Money!" });
     }else res.status(404).send({ error: "Stock Not Found!" })

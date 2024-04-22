@@ -1,65 +1,17 @@
-io.on('connection', (socket) => {
-  console.log('User connected.');
+Sat - 24h u danu
 
-  socket.on('new-user', data => {
-    const token = data.token
-    socket.player_id = jwt.verify(token, JWT_SECRET)
-    socket.last_time = new Date().getTime();
+San (0-10)
+Posao (8h)
+Hrana (30 dana - zdrava skupa, losa jeftina)
+Trening
+Ucenje (sati potrebno za zavrsavanje stepena edukacije)
+Side hustle poslovi (nosenje stvari, pranje)
+Putovanje (pjeske, auto, motor, bus) + karte za bus + gorivo + rizik
 
-    socket.interval = setInterval(socket => {
-      const time = ( new Date().getTime() - socket.last_time)/3600000;
-      const id = socket.player_id
-      addTime(id, time)
-    }, 60000);
-
-  })
-
-  // Listen for the 'disconnect' event
-  socket.on('disconnect', () => {
-    console.log('User disconnected.');
-    try{
-     const time = ( new Date().getTime() - socket.last_time)/3600000;
-     addTime(socket.player_id, time)
-     clearInterval(socket.interval)
-    }catch{}
-
-  });
-});
-
-function addTime(player, time){
-  db.query(`INSERT INTO player_time (player_id, time) VALUES ('${player}', ${time})`)
-}
+Zdravlje, povrede - bolnica (lijekovi), san i hrana uticu na zdravlje, posao i prevoz uticu na rizik
 
 
-
-stock price change 
-  const stock = stocks[Math.floor(Math.random() * stocks.length)];
-  var maxPriceChange
-  if(stock.stability >= 80) maxPriceChange=5
-  else if(stock.stability >= 60) maxPriceChange=15
-  else if(stock.stability >= 40) maxPriceChange=50
-  else if(stock.stability >= 25) maxPriceChange=80
-  else maxPriceChange=495
-
-  // Generate a random number between 0 and 1
-
-  const priceChangeDirection = Math.random() >= 0.5 ? 1 : -1;
-
-  if(priceChangeDirection<0) maxPriceChange/=5
-  
-  // Multiply by stability to get volatility factor
-  const volatilityFactor = Math.random() * (100-stock.stability)/100;
-  
-  // Multiply by maximum price change to get actual price change
-
-  
-  // Determine whether price should go up or down
+Kradja, anit theft oprema
 
 
-  if(priceChangeDirection<0 && volatilityFactor>=100) maxPriceChange=99
-
-  const actualPriceChange = volatilityFactor * maxPriceChange / 100;
-  
-  // Calculate new price
-  const newPrice = stock.price * (1 + priceChangeDirection * actualPriceChange);
-  // Schedule the next update (max-min+1)+max - 3h 10min
+Popravljanje vozila (nakon nesrece), osiguranje

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Market</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/market.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+          <a id="username" href="#"></a>
+          <ul class="navbar-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/jobs">Jobs</a></li>
+            <li><a href="/education">Education</a></li>
+            <li><a href="/bank">Bank</a></li>
+            <li><a href="/market">Market</a></li>
+            <li><a href="#" onclick="logout()">Log Out</a></li>
+          </ul>
+          <a class="logo" href="#">The Rich Race</a>
+        </div>
+      </nav>
+    
+
+	<div class="market">
+		<div class="market__option" onclick="location.href='/market/vehicle/car';">
+			<div class="market__option-image" style="background-image: url('/img/markets/car.png');"></div>
+			<div class="market__option-name">Car Dealerships</div>
+		</div>
+		<div class="market__option" onclick="location.href='/market/vehicle/motorcycle'">
+			<div class="market__option-image" style="background-image: url('/img/markets/motorcycle.png');"></div>
+			<div class="market__option-name">Motorcycle Dealerships</div>
+		</div>
+
+	</div>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

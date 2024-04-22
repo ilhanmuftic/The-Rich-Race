@@ -5,9 +5,13 @@ const loanName = urlParams.get('name');
 const loanValue = urlParams.get('value');
 var to = urlParams.get('to');
 
+
+
 if(loanName) document.getElementById('name').value = loanName;
 if(loanValue) document.getElementById('amount').value = loanValue;
 if(!to) to = "/"
+
+
 
 
 loanForm.addEventListener("submit", (e) => {
@@ -15,6 +19,7 @@ loanForm.addEventListener("submit", (e) => {
     const name = loanForm.name.value;
     const amount = loanForm.amount.value;
     const data = { name, amount };
+    if(parseInt(amount) > player.salary*6) return alert("You can't take that loan. Maximum amount is " + dollars(player.salary*6))
     fetch("/get-loan", {
       method: "POST",
       headers: {

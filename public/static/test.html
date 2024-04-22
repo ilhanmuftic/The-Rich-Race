@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Adjustable Pie Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .chart-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .inputs {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    input {
+      margin: 5px;
+      width: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chart-container">
+    <div class="chart">
+      <canvas id="myChart"></canvas>
+    </div>
+    <div class="inputs">
+      <label>Work Hours:</label>
+      <input type="number" id="workHours" min="0" max="24" value="8">
+      <label>Sleep Hours:</label>
+      <input type="number" id="sleepHours" min="0" max="24" value="8">
+    </div>
+  </div>
+  <script>
+    const workInput = document.getElementById('workHours');
+    const sleepInput = document.getElementById('sleepHours');
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Work', 'Sleep'],
+        datasets: [{
+          data: [workInput.value, sleepInput.value],
+          backgroundColor: ['#3498db', '#e74c3c']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+    function updateChart() {
+      const workValue = parseInt(workInput.value);
+      const sleepValue = parseInt(sleepInput.value);
+      const totalValue = workValue + sleepValue;
+
+      if (totalValue <= 24) {
+        chart.data.datasets[0].data = [workValue, sleepValue];
+        chart.update();
+      }
+    }
+
+    workInput.addEventListener('input', updateChart);
+    sleepInput.addEventListener('input', updateChart);
+  </script>
+</body>
+</html>

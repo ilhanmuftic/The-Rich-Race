@@ -50,10 +50,11 @@ fetch('/financials')
         });
 
         data.stocks.forEach(stock => {
-          stockElement = stringToHTML(`<table><tr id="${stock.id}" class="stock" onclick="selectAmountPrompt('Select amount of ${stock.symbol} you want to sell!', 'sellStock(\`${stock.id}\`)', ${stock.price})">
+          stockElement = stringToHTML(`<table><tr id="${stock.id}" class="stock" onclick="selectAmountPrompt('Select amount of ${stock.symbol} you want to sell!', 'sellStock(\`${stock.id}\`)', ${stock.price}, ${stock.profit})">
           <td name="name">${stock.symbol}</td>
           <td name="price">${dollars(stock.price)}</td>
           <td name="amount">${stock.amount}</td>
+          <td name="profit" style="color: ${stock.profit>0? "green":"red"}">${stock.profit}%</td>
           </tr></table>`).firstChild.firstChild
 
           assetsTable.querySelector('tr[name="stock"]').insertAdjacentElement('afterend', stockElement);

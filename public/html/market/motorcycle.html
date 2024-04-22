@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank</title>
+    <title>Stock Market</title>
     <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/bank.css">
+    <link rel="stylesheet" href="/css/market.css">
+    <link rel="stylesheet" href="/css/prompt.css">
 </head>
 <body>
     <nav class="navbar">
@@ -19,25 +20,17 @@
             <li><a href="/bank">Bank</a></li>
             <li><a href="/market">Market</a></li>
             <li><a href="#" onclick="logout()">Log Out</a></li>
+
           </ul>
           <a class="logo" href="#">The Rich Race</a>
         </div>
       </nav>
+      <div id="balance"></div>
+      <h4>Motorcycles lose 5% of their value when bought from the dealership!</h2>
+    <div id="vehicle-container"></div>
 
-    <div class="loan-form">
-        <h2>Get A Loan</h2>
-        <form id="loan-form">
-          <label for="name">Loan name:</label>
-          <input type="text" id="name" name="name" value="Bank Loan" required>
-          <label for="amount">Loan amount:</label>
-          <input type="number" id="amount" name="amount" required>
-          Loan interest rate is 10%
-          <span id="max" style="font-weight: bold;margin-bottom: 10px;"></span>
-          <button type="submit">Submit</button>
-        </form>
-      </div>
-      
-      <script defer src="/js/script.js"></script>
-      <script defer src="/js/bank.js"></script>
+
+    <script src="/js/script.js"></script>
+    <script src="/js/market/motorcycle.js"></script>
 </body>
 </html>
